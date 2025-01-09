@@ -1,31 +1,23 @@
 // Create web server
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var fs = require('fs');
-var path = require('path');
+const express = require('express');
+const app = express();
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+// Middleware для обработки JSON и URL-кодированных данных
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/comments', function(req, res) {
-  fs.readFile('comments.json', function(err, data) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(data);
-  });
+// Set up the server
+app.listen(3000, () => {
+    console.log('Server is running on http://localhost:3000');
 });
 
-app.post('/comments', function(req, res) {
-  fs.readFile('comments.json', function(err, data) {
-    var comments = JSON.parse(data);
-    comments.push(req.body);
-    fs.writeFile('comments.json', JSON.stringify(comments, null, 4), function(err) {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(JSON.stringify(comments));
-    });
-  });
+// Set up the route
+app.get('/comments', (req, res) => {
+    res.send('This is the comments page');
 });
 
-app.listen(3000);
+// Маршрут для обработки POST-запросов на /comments
+app.post('/comments', (req, res) => {
+    const comment = req.body.comment;
+    res.send(`Comment received: ${comment}`);
+});
